@@ -412,7 +412,7 @@ for trans_id in trans_id_list:
 
         #for missing nucleotides the protein will not be complete so cannot do ORF prediction
         if q_frame == "missing_nucleotides":
-            best_match_line = "\t".join([trans_id,"no_frame","-1","-1","-1","-1","none","missing_nucleotides","-1","-1",'-1'])
+            best_match_line = "\t".join([trans_id,"no_frame","-1","-1","-1","-1","none","missing_nucleotides","-1","-1",'missing_nucleotides'])
             break
 
         #>G1;G1.4::1:2350-3116(+):F2:1:74:74:E

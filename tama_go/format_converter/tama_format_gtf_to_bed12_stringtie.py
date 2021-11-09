@@ -57,7 +57,7 @@ class Transcript:
     def finish_bed(self):
         
         
-        exon_num_list = self.exon_dict.keys()
+        exon_num_list = list(self.exon_dict.keys())
         self.num_exons = len(exon_num_list)
         exon_num_list.sort()
         
@@ -111,6 +111,12 @@ for line in gtf_file_contents:
     e_end = int(line_split[4])
     strand = line_split[6]
     id_line = line_split[8]
+
+    if strand == '-':
+        temp_start = e_end
+        temp_end = e_start
+        e_start = temp_start
+        e_end = temp_end
     
     id_split = id_line.split(";")
     
@@ -153,7 +159,11 @@ for gene_id in gene_list:
     
     for trans_id in trans_list:
         
-        gene_trans_dict[gene_id][trans_id].finish_bed()
+        try:
+            gene_trans_dict[gene_id][trans_id].finish_bed()
+        except:
+            print(trans_id)
+            assert 0 == 1
         
         trans_obj = gene_trans_dict[gene_id][trans_id]
         

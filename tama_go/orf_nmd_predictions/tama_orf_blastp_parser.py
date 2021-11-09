@@ -7,7 +7,7 @@ import argparse
 
 #
 # This script parses information from the default output of blastp
-# 
+#
 #
 
 
@@ -66,21 +66,21 @@ class Hit:
         self.s_end = int(s_end)
         self.s_align_len = self.s_end + 1 - self.s_start
         self.q_align_len = self.q_end + 1 - self.q_start
-        
+
         #self.ident_numerator = ident_numerator #same as ident_len
         #self.ident_denominator = ident_denominator # same as align_len
         self.pos_numerator = int(pos_numerator)
         self.pos_denominator = int(pos_denominator)
-        
+
         #if self.s_align_len != self.q_align_len:
         #    print("Mismatching alignment lengths")
         #    print(q_name + "\t" + str(self.s_align_len))
         #    print(s_name + "\t" + str(self.q_align_len))
         #    sys.exit()
-        
+
         self.ident_percent = ident_percent
         self.e_val = e_val
-        
+
 
 q_name = ""
 q_len = 0
@@ -399,20 +399,20 @@ with open(blastp_file) as blastp_file_contents:
 
 # check protein alignments for each query and define CDS based on that
 for trans_id in trans_id_list:
-    
+
     best_match_line = ""
     best_align_percent = 0.0
-    
+
     for q_name in trans_id_dict[trans_id]:
         q_name_split = q_name.split(":")
         trans_id = q_name_split[0]
         trans_id = trans_id.split("(")[0] #account for newer bedtools 2.27 formatting
-        
+
         q_frame = q_name_split[-7]
-        
+
         #for missing nucleotides the protein will not be complete so cannot do ORF prediction
         if q_frame == "missing_nucleotides":
-            best_match_line = "\t".join([trans_id,"no_frame","-1","-1","-1","-1","none","missing_nucleotides","-1","-1"])
+            best_match_line = "\t".join([trans_id,"no_frame","-1","-1","-1","-1","none","missing_nucleotides","-1","-1",'-1'])
             break
 
         #>G1;G1.4::1:2350-3116(+):F2:1:74:74:E
@@ -424,15 +424,15 @@ for trans_id in trans_id_list:
 
         q_nuc_start = int(q_name_split[-6])
         q_nuc_end = int(q_name_split[-5])
-        
+
         #print(q_name)
 
         for s_obj in query_dict[q_name]:
             #print(s_obj.s_name +  "\t" + str(s_obj.s_align_len) + "\t" + str(s_obj.s_len))
             s_align_percent = float(s_obj.s_align_len) / float(s_obj.s_len)
-            
+
             ident_percent = str(s_obj.ident_percent)
-            
+
             s_align_percent_format = str(int(s_align_percent*100))
             # if there is a complete protein match use protein sequence for cds
             if int(s_align_percent) == 1:
@@ -446,14 +446,14 @@ for trans_id in trans_id_list:
 
                     match_flag = "full_match"
                     #best_match_line = "\t".join([trans_id,q_frame,str(q_rel_start),str(q_rel_end),str(new_q_rel_start),str(new_q_rel_end),s_obj.s_name,match_flag,s_align_percent_format,ident_percent])
-                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent])
-
                     best_align_percent = s_align_percent
+                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, best_align_percent])
 
-            
+
+
             ########################################## Start up here. Need to find best match then use that as the output!!!!!
-    
-            #If there is 90% match then use the start site of the protein and the end position of the ORF        
+
+            #If there is 90% match then use the start site of the protein and the end position of the ORF
             if s_align_percent >= 0.9:
                 #new_q_rel_start = s_obj.q_start - 1 + q_rel_start # minus 1 to adjust for coordinates
                 #new_q_rel_end = q_rel_end
@@ -461,43 +461,43 @@ for trans_id in trans_id_list:
                 new_q_rel_start = q_rel_start
                 new_q_rel_end = q_rel_end
 
-                
+
                 if s_align_percent > best_align_percent:
                     match_flag = "90_match"
                     #best_match_line = "\t".join([trans_id,q_frame,str(q_rel_start),str(q_rel_end),str(new_q_rel_start),str(new_q_rel_end),s_obj.s_name,match_flag,s_align_percent_format,ident_percent])
-                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent])
                     best_align_percent = s_align_percent
-     
-            
+                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, best_align_percent])
+
+
             #If there is 50% match then use the start site of the protein match on the query and the end position of the ORF
-            #If there is 50% match then use ORF start and end 
+            #If there is 50% match then use ORF start and end
             if s_align_percent >= 0.5:
                 #new_q_rel_start = s_obj.q_start - 1 + q_rel_start # minus 1 to adjust for coordinates
-                new_q_rel_start = q_rel_start 
+                new_q_rel_start = q_rel_start
                 new_q_rel_end = q_rel_end
-                
+
                 if s_align_percent > best_align_percent:
                     match_flag = "50_match"
                     #best_match_line = "\t".join([trans_id,q_frame,str(q_rel_start),str(q_rel_end),str(new_q_rel_start),str(new_q_rel_end),s_obj.s_name,match_flag,s_align_percent_format,ident_percent])
-                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent])
                     best_align_percent = s_align_percent
-    
-            
-            #If there is less than 50% match use ORF start and end    
+                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, best_align_percent])
+
+
+            #If there is less than 50% match use ORF start and end
             if s_align_percent < 0.5:
-                new_q_rel_start = q_rel_start 
+                new_q_rel_start = q_rel_start
                 new_q_rel_end = q_rel_end
-                
+
                 if s_align_percent > best_align_percent:
                     match_flag = "bad_match"
                     #best_match_line = "\t".join([trans_id,q_frame,str(q_rel_start),str(q_rel_end),str(new_q_rel_start),str(new_q_rel_end),s_obj.s_name,match_flag,s_align_percent_format,ident_percent])
-                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent])
                     best_align_percent = s_align_percent
-                    
+                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, best_align_percent])
+
             #break here so that we only use the top hit
             #break
-    
-    # when no hits are found 
+
+    # when no hits are found
     if len(best_match_line) == 0:
         max_len = 0
         max_query = ""
@@ -524,15 +524,9 @@ for trans_id in trans_id_list:
 
                 max_q_nuc_start = q_nuc_start
                 max_q_nuc_end = q_nuc_end
-            
-        best_match_line = "\t".join([trans_id,max_frame,str(max_q_nuc_start),str(max_q_nuc_end),str(max_q_rel_start),str(max_q_rel_end),"none","no_hit","0","0"])
-        
-        
+
+        best_match_line = "\t".join([trans_id,max_frame,str(max_q_nuc_start),str(max_q_nuc_end),str(max_q_rel_start),str(max_q_rel_end),"none","no_hit","0","0",'0'])
+
+
     outfile.write(best_match_line)
     outfile.write("\n")
-        
-
-
-
-
-   

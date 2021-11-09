@@ -447,7 +447,7 @@ for trans_id in trans_id_list:
                     match_flag = "full_match"
                     #best_match_line = "\t".join([trans_id,q_frame,str(q_rel_start),str(q_rel_end),str(new_q_rel_start),str(new_q_rel_end),s_obj.s_name,match_flag,s_align_percent_format,ident_percent])
                     best_align_percent = s_align_percent
-                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, str(best_align_percent)])
+                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, '{:.2f}'.format(best_align_percent*100)])
 
 
 
@@ -466,7 +466,7 @@ for trans_id in trans_id_list:
                     match_flag = "90_match"
                     #best_match_line = "\t".join([trans_id,q_frame,str(q_rel_start),str(q_rel_end),str(new_q_rel_start),str(new_q_rel_end),s_obj.s_name,match_flag,s_align_percent_format,ident_percent])
                     best_align_percent = s_align_percent
-                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, str(best_align_percent)])
+                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, '{:.2f}'.format(best_align_percent*100)])
 
 
             #If there is 50% match then use the start site of the protein match on the query and the end position of the ORF
@@ -480,7 +480,7 @@ for trans_id in trans_id_list:
                     match_flag = "50_match"
                     #best_match_line = "\t".join([trans_id,q_frame,str(q_rel_start),str(q_rel_end),str(new_q_rel_start),str(new_q_rel_end),s_obj.s_name,match_flag,s_align_percent_format,ident_percent])
                     best_align_percent = s_align_percent
-                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, str(best_align_percent)])
+                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, '{:.2f}'.format(best_align_percent*100)])
 
 
             #If there is less than 50% match use ORF start and end
@@ -492,7 +492,7 @@ for trans_id in trans_id_list:
                     match_flag = "bad_match"
                     #best_match_line = "\t".join([trans_id,q_frame,str(q_rel_start),str(q_rel_end),str(new_q_rel_start),str(new_q_rel_end),s_obj.s_name,match_flag,s_align_percent_format,ident_percent])
                     best_align_percent = s_align_percent
-                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, str(best_align_percent)])
+                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, '{:.2f}'.format(best_align_percent*100)])
 
             #break here so that we only use the top hit
             #break

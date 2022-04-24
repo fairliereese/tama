@@ -6,7 +6,7 @@ import argparse
 
 
 #
-# This script finds open reading frames from transcript sequences 
+# This script finds open reading frames from transcript sequences
 # It outputs the location and protein sequence for each open reading frame
 #
 
@@ -146,12 +146,12 @@ class Orf:
 
         self.n_start = n_start
         self.n_end = n_end
-        
+
         #self.n_start = (a_start - 1) * 3 + frame
         #self.n_end = (a_end - 1) * 3 + frame  + 2
 
         self.orf_id = "_".join([str(frame), str(a_start), str(a_end), str(self.n_start), str(self.n_end), str(self.orf_length),self.start_codon])
-        
+
 
 
 
@@ -172,19 +172,19 @@ def frame_iterate(seq,frame):
             print("sequence has N's")
             n_flag = 1
             break
-            
+
         pos = pos + 3
     return [prot_seq,n_flag,n_pos_list]
 
 #use prot seq from frame_iterate to find orf's
 def orf_seeker(prot_seq,frame,n_pos_list):
-    
+
     #orf_list = [] # list of orf objects
 
     orf_dict = {} # orf_dict[orf id] = orf obj
     orf_seq = []
     orf_start = 0
-    
+
     #find first orf, as in if there is 5' degradation
     for i,amino_acid in enumerate(prot_seq):
         if amino_acid == "$":
@@ -202,10 +202,10 @@ def orf_seeker(prot_seq,frame,n_pos_list):
                 break
             else:
                 break
-        
+
         orf_seq.append(amino_acid)
-    
-    
+
+
     orf_seq = []
     orf_start = 0
     #find orf's starting with Met
@@ -234,7 +234,7 @@ def orf_seeker(prot_seq,frame,n_pos_list):
                 #refresh orf variables
                 orf_seq = []
                 orf_start = i+1
-            continue    
+            continue
         #continue adding rof seq
         orf_seq.append(amino_acid)
 
@@ -252,30 +252,30 @@ def orf_seeker(prot_seq,frame,n_pos_list):
 
 def sort_orf_list(orf_list1,orf_list2,orf_list3):
     orf_size_dict = {} # orf_size_dict[size] = list of orf objects
-    
+
     all_orf_list = orf_list1 + orf_list2 + orf_list3
-    
-    
+
+
     for orf_obj in all_orf_list:
         orf_length = orf_obj.orf_length
-        
+
         if orf_length not in orf_size_dict:
             orf_size_dict[orf_length] = []
-            
+
         orf_size_dict[orf_length].append(orf_obj)
-    
-    orf_size_list = orf_size_dict.keys()
+
+    orf_size_list = list(orf_size_dict.keys())
     orf_size_list.sort(reverse=True)
-    
+
     top_orf_list = []
-    
+
     #get longest 4 orf's, may be less if there aren't that many due to the stop codon assumption
     for i in xrange(4):
         if i < len(orf_size_list):
             for orf_obj in orf_size_dict[orf_size_list[i]]:
-                
+
                 top_orf_list.append(orf_obj)
-    
+
     return top_orf_list
 
 
@@ -285,29 +285,29 @@ for seq_record in SeqIO.parse(fasta_file, "fasta"):
     if count % 1000 == 0:
         print(count)
     count += 1
-    
+
     trans_id = str(seq_record.id)
     trans_seq = str(seq_record.seq)
     trans_seq = trans_seq.upper()
-    
+
     [f1_prot_seq,f1_n_flag,f1_n_pos_list] = frame_iterate(trans_seq,1)
     [f2_prot_seq,f2_n_flag,f2_n_pos_list] = frame_iterate(trans_seq,2)
     [f3_prot_seq,f3_n_flag,f3_n_pos_list] = frame_iterate(trans_seq,3)
-    
+
     all_n_flag = f1_n_flag + f2_n_flag + f3_n_flag
-    
+
     if all_n_flag > 0:
         outline = ">" + trans_id + ":" + "missing_nucleotides"
         outfile.write(outline)
         outfile.write("\n")
         continue
-    
+
     f1_orf_list = orf_seeker(f1_prot_seq,1,f1_n_pos_list)
     f2_orf_list = orf_seeker(f2_prot_seq,2,f2_n_pos_list)
     f3_orf_list = orf_seeker(f3_prot_seq,3,f3_n_pos_list)
-    
+
     top_orf_list = sort_orf_list(f1_orf_list,f2_orf_list,f3_orf_list)
-    
+
     for orf_obj in top_orf_list:
         frame_flag = "F" + str(orf_obj.frame)
         outline = ":".join([trans_id,frame_flag,str(orf_obj.n_start),str(orf_obj.n_end),str(orf_obj.a_start),str(orf_obj.a_end),str(orf_obj.orf_length),orf_obj.start_codon])
@@ -315,16 +315,7 @@ for seq_record in SeqIO.parse(fasta_file, "fasta"):
         outline = ">" + outline
         outfile.write(outline)
         outfile.write("\n")
-        
+
         outline = "".join(orf_obj.orf_seq)
         outfile.write(outline)
         outfile.write("\n")
-
-    
-    
-    
-
-
-
-
-

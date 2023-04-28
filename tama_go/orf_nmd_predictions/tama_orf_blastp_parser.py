@@ -412,6 +412,7 @@ with open(blastp_file) as blastp_file_contents:
 
 
 # check protein alignments for each query and define CDS based on that
+# bepis = 0
 for trans_id in trans_id_list:
 
     best_match_line = ""
@@ -422,12 +423,20 @@ for trans_id in trans_id_list:
         trans_id = q_name_split[0]
         trans_id = trans_id.split("(")[0] #account for newer bedtools 2.27 formatting
 
-        q_frame = q_name_split[-7]
-
         #for missing nucleotides the protein will not be complete so cannot do ORF prediction
-        if q_frame == "missing_nucleotides":
+        if 'missing_nucleotides' in q_name:
             best_match_line = "\t".join([trans_id,"no_frame","-1","-1","-1","-1","none","missing_nucleotides","-1","-1"])
             break
+
+        if bepis:
+            import pdb; pdb.set_trace()
+
+        # try:
+        q_frame = q_name_split[-7]
+        # except:
+        #     bepis = 1
+        #     import pdb
+        #     pdb.set_trace()
 
         #>G1;G1.4::1:2350-3116(+):F2:1:74:74:E
 

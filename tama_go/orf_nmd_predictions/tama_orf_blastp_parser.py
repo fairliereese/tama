@@ -412,7 +412,6 @@ with open(blastp_file) as blastp_file_contents:
 
 
 # check protein alignments for each query and define CDS based on that
-# bepis = 0
 for trans_id in trans_id_list:
 
     best_match_line = ""
@@ -427,9 +426,6 @@ for trans_id in trans_id_list:
         if 'missing_nucleotides' in q_name:
             best_match_line = "\t".join([trans_id,"no_frame","-1","-1","-1","-1","none","missing_nucleotides","-1","-1"])
             break
-
-        if bepis:
-            import pdb; pdb.set_trace()
 
         # try:
         q_frame = q_name_split[-7]

@@ -134,7 +134,7 @@ for line in pbri_file_contents:
 
     frame = trans_dict[trans_id][1]
     prot_id = trans_dict[trans_id][6]
-    match_flag = trans_dict[trans_id][10]
+    match_flag = trans_dict[trans_id][7]
     trans_start = int(line_split[1])
     trans_end = int(line_split[2])
     block_start_list = line_split[11].split(",")

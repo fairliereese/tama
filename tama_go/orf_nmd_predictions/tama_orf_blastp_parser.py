@@ -7,7 +7,7 @@ import argparse
 
 #
 # This script parses information from the default output of blastp
-#
+# Last updated on 2022/11/15 by RK
 #
 
 
@@ -122,11 +122,15 @@ trans_id_dict = {}
 
 query_id_line_flag = 0
 
+blastp_line_count = 0
+
 print("opening blastp file")
 with open(blastp_file) as blastp_file_contents:
     for line in blastp_file_contents:
 
         line = line.rstrip("\n")
+
+        blastp_line_count += 1
 
         # check that we are not in the middle of getting the subject name
         if s_name_flag == 1:
@@ -378,7 +382,17 @@ with open(blastp_file) as blastp_file_contents:
                 s_end = line.split()[3]
                 align_start_flag = 0
             elif align_start_flag == 0:
-                s_end = line.split()[3]
+
+                ## sanity check for file formatting
+                if len(line.split()) < 4:
+                    print("Strange formatting of Sbjct line")
+                    print(line)
+                    print("Oddity on line: " + str(blastp_line_count))
+
+                else:
+
+                    s_end = line.split()[3]
+
             continue
 
         if line == "***** No hits found *****":
@@ -412,7 +426,7 @@ for trans_id in trans_id_list:
 
         #for missing nucleotides the protein will not be complete so cannot do ORF prediction
         if q_frame == "missing_nucleotides":
-            best_match_line = "\t".join([trans_id,"no_frame","-1","-1","-1","-1","none","missing_nucleotides","-1","-1",'missing_nucleotides'])
+            best_match_line = "\t".join([trans_id,"no_frame","-1","-1","-1","-1","none","missing_nucleotides","-1","-1"])
             break
 
         #>G1;G1.4::1:2350-3116(+):F2:1:74:74:E
@@ -446,9 +460,9 @@ for trans_id in trans_id_list:
 
                     match_flag = "full_match"
                     #best_match_line = "\t".join([trans_id,q_frame,str(q_rel_start),str(q_rel_end),str(new_q_rel_start),str(new_q_rel_end),s_obj.s_name,match_flag,s_align_percent_format,ident_percent])
-                    best_align_percent = s_align_percent
-                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, '{:.2f}'.format(best_align_percent*100)])
+                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent])
 
+                    best_align_percent = s_align_percent
 
 
             ########################################## Start up here. Need to find best match then use that as the output!!!!!
@@ -465,8 +479,8 @@ for trans_id in trans_id_list:
                 if s_align_percent > best_align_percent:
                     match_flag = "90_match"
                     #best_match_line = "\t".join([trans_id,q_frame,str(q_rel_start),str(q_rel_end),str(new_q_rel_start),str(new_q_rel_end),s_obj.s_name,match_flag,s_align_percent_format,ident_percent])
+                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent])
                     best_align_percent = s_align_percent
-                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, '{:.2f}'.format(best_align_percent*100)])
 
 
             #If there is 50% match then use the start site of the protein match on the query and the end position of the ORF
@@ -479,8 +493,8 @@ for trans_id in trans_id_list:
                 if s_align_percent > best_align_percent:
                     match_flag = "50_match"
                     #best_match_line = "\t".join([trans_id,q_frame,str(q_rel_start),str(q_rel_end),str(new_q_rel_start),str(new_q_rel_end),s_obj.s_name,match_flag,s_align_percent_format,ident_percent])
+                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent])
                     best_align_percent = s_align_percent
-                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, '{:.2f}'.format(best_align_percent*100)])
 
 
             #If there is less than 50% match use ORF start and end
@@ -491,8 +505,8 @@ for trans_id in trans_id_list:
                 if s_align_percent > best_align_percent:
                     match_flag = "bad_match"
                     #best_match_line = "\t".join([trans_id,q_frame,str(q_rel_start),str(q_rel_end),str(new_q_rel_start),str(new_q_rel_end),s_obj.s_name,match_flag,s_align_percent_format,ident_percent])
+                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent])
                     best_align_percent = s_align_percent
-                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, '{:.2f}'.format(best_align_percent*100)])
 
             #break here so that we only use the top hit
             #break
@@ -525,7 +539,7 @@ for trans_id in trans_id_list:
                 max_q_nuc_start = q_nuc_start
                 max_q_nuc_end = q_nuc_end
 
-        best_match_line = "\t".join([trans_id,max_frame,str(max_q_nuc_start),str(max_q_nuc_end),str(max_q_rel_start),str(max_q_rel_end),"none","no_hit","0","0",'0'])
+        best_match_line = "\t".join([trans_id,max_frame,str(max_q_nuc_start),str(max_q_nuc_end),str(max_q_rel_start),str(max_q_rel_end),"none","no_hit","0","0"])
 
 
     outfile.write(best_match_line)

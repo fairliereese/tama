@@ -544,7 +544,7 @@ for trans_id in trans_id_list:
                 max_q_nuc_start = q_nuc_start
                 max_q_nuc_end = q_nuc_end
 
-        best_match_line = "\t".join([trans_id,max_frame,str(max_q_nuc_start),str(max_q_nuc_end),str(max_q_rel_start),str(max_q_rel_end),"none","no_hit","0","0"])
+        best_match_line = "\t".join([trans_id,max_frame,str(max_q_nuc_start),str(max_q_nuc_end),str(max_q_rel_start),str(max_q_rel_end),"none","no_hit","0","0",str(s_align_percent)])
 
 
     outfile.write(best_match_line)

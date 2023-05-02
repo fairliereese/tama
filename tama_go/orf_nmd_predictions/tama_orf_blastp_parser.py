@@ -424,7 +424,7 @@ for trans_id in trans_id_list:
 
         #for missing nucleotides the protein will not be complete so cannot do ORF prediction
         if 'missing_nucleotides' in q_name:
-            best_match_line = "\t".join([trans_id,"no_frame","-1","-1","-1","-1","none","missing_nucleotides","-1","-1"])
+            best_match_line = "\t".join([trans_id,"no_frame","-1","-1","-1","-1","none","missing_nucleotides","-1","-1", q_name])
             break
 
         # try:
@@ -465,7 +465,7 @@ for trans_id in trans_id_list:
 
                     match_flag = "full_match"
                     #best_match_line = "\t".join([trans_id,q_frame,str(q_rel_start),str(q_rel_end),str(new_q_rel_start),str(new_q_rel_end),s_obj.s_name,match_flag,s_align_percent_format,ident_percent])
-                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent])
+                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, q_name])
 
                     best_align_percent = s_align_percent
 
@@ -484,7 +484,7 @@ for trans_id in trans_id_list:
                 if s_align_percent > best_align_percent:
                     match_flag = "90_match"
                     #best_match_line = "\t".join([trans_id,q_frame,str(q_rel_start),str(q_rel_end),str(new_q_rel_start),str(new_q_rel_end),s_obj.s_name,match_flag,s_align_percent_format,ident_percent])
-                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent])
+                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, q_name])
                     best_align_percent = s_align_percent
 
 
@@ -498,7 +498,7 @@ for trans_id in trans_id_list:
                 if s_align_percent > best_align_percent:
                     match_flag = "50_match"
                     #best_match_line = "\t".join([trans_id,q_frame,str(q_rel_start),str(q_rel_end),str(new_q_rel_start),str(new_q_rel_end),s_obj.s_name,match_flag,s_align_percent_format,ident_percent])
-                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent])
+                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, q_name])
                     best_align_percent = s_align_percent
 
 
@@ -510,7 +510,7 @@ for trans_id in trans_id_list:
                 if s_align_percent > best_align_percent:
                     match_flag = "bad_match"
                     #best_match_line = "\t".join([trans_id,q_frame,str(q_rel_start),str(q_rel_end),str(new_q_rel_start),str(new_q_rel_end),s_obj.s_name,match_flag,s_align_percent_format,ident_percent])
-                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent])
+                    best_match_line = "\t".join([trans_id, q_frame, str(q_nuc_start), str(q_nuc_end), str(new_q_rel_start), str(new_q_rel_end),s_obj.s_name, match_flag, s_align_percent_format, ident_percent, q_name])
                     best_align_percent = s_align_percent
 
             #break here so that we only use the top hit
@@ -543,8 +543,9 @@ for trans_id in trans_id_list:
 
                 max_q_nuc_start = q_nuc_start
                 max_q_nuc_end = q_nuc_end
+                max_q_name = q_name
 
-        best_match_line = "\t".join([trans_id,max_frame,str(max_q_nuc_start),str(max_q_nuc_end),str(max_q_rel_start),str(max_q_rel_end),"none","no_hit","0","0",str(s_align_percent)])
+        best_match_line = "\t".join([trans_id,max_frame,str(max_q_nuc_start),str(max_q_nuc_end),str(max_q_rel_start),str(max_q_rel_end),"none","no_hit","0","0", q_name])
 
 
     outfile.write(best_match_line)
